@@ -1,12 +1,15 @@
 import express from "express";
 import mongoose from "mongoose";
 import router from "./router.js";
+import fileUpload from "express-fileupload";
 
 const PORT = 5001;
 const DB_URL =
   "mongodb+srv://skydark912:skydark912@cluster0.lp4gery.mongodb.net/?retryWrites=true&w=majority";
 
 const app = express();
+app.use(fileUpload())
+app.use(express.static('static'))
 app.use(express.json());
 app.use('/api', router)
 

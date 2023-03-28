@@ -1,10 +1,10 @@
-import Post from "./Post.js";
 import PostService from "./PostService.js";
 
 class PostController {
   async create(req, res) {
     try {
-      const post = await PostService.create(req.body);
+      console.log(req.files); 
+      const post = await PostService.create(req.body, req.files.picture);
       console.log(req.body);
       return res.status(200).json(post);
     } catch (e) {
@@ -24,11 +24,7 @@ class PostController {
   }
   async getOne(req, res) {
     try {
-      const { id } = req.params;
-      if (!id) {
-        res.status(400).json({ message: "No ID sent" });
-      }
-      const post = await PostService.getOne(id);
+      const post = await PostService.getOne(req.params.id);
       return res.status(200).json(post);
     } catch (e) {
       res.status(500).json(e);
@@ -37,31 +33,21 @@ class PostController {
   }
   async update(req, res) {
     try {
-      const post = req.body;
-      if (!post._id) {
-        return res.status(400).json({ message: "ID not found" });
-      }
-      const updatedPost = await PostService.update(post._id, post);
-
+      const updatedPost = await PostService.update(req.body._id, req.body);
       return res.status(200).json(updatedPost);
     } catch (e) {
-      res.status(500).json(e);
+      res.status(500).json(e.message);
       console.log(e);
     }
   }
   async delete(req, res) {
     try {
-      const { id } = req.params;
-
-      if (!id) {
-        return res.status(400).json({ message: "ID not found" });
-      }
-      const deletedPost = await PostService.delete(id);
+      const deletedPost = await PostService.delete(req.params.id);
       return res
         .status(200)
-        .json({ message: `Post ${id} has been removed`, deletedPost });
+        .json({ message: `Post ${req.params.id} has been removed`, deletedPost });
     } catch (e) {
-      res.status(500).json(e);
+      res.status(500).json(e.message);
       console.log(e);
     }
   }
